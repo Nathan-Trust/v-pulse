@@ -27,10 +27,15 @@ export function LoginForm() {
   const onSubmit = async (data: LoginInput) => {
     setError('')
     try {
+      console.log('[v0] Attempting login with:', data.email)
       await login(data.email, data.password)
+      console.log('[v0] Login successful, user authenticated')
+      // Immediately redirect after successful login
       router.push('/dashboard')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed')
+      const errorMsg = err instanceof Error ? err.message : 'Login failed'
+      console.log('[v0] Login error:', errorMsg)
+      setError(errorMsg)
     }
   }
 

@@ -36,6 +36,11 @@ export const useAuthStore = create<AuthState>()(
           }
           
           if (email === 'demo@fusiontech.com' && password === 'demo123') {
+            // Set auth token cookie for middleware to recognize
+            if (typeof window !== 'undefined') {
+              document.cookie = `auth-token=${btoa(JSON.stringify(mockUser))}; path=/; max-age=604800`
+              console.log('[v0] Setting auth cookie for user:', email)
+            }
             set({ user: mockUser, isAuthenticated: true })
           } else {
             throw new Error('Invalid credentials')
@@ -57,6 +62,12 @@ export const useAuthStore = create<AuthState>()(
             name,
           }
           
+          // Set auth token cookie for middleware to recognize
+          if (typeof window !== 'undefined') {
+            document.cookie = `auth-token=${btoa(JSON.stringify(newUser))}; path=/; max-age=604800`
+            console.log('[v0] Setting auth cookie for new user:', email)
+          }
+          
           set({ user: newUser, isAuthenticated: true })
         } catch (error) {
           throw error
@@ -66,6 +77,10 @@ export const useAuthStore = create<AuthState>()(
       },
       
       logout: () => {
+        if (typeof window !== 'undefined') {
+          document.cookie = `auth-token=; path=/; max-age=0`
+          console.log('[v0] Clearing auth cookie')
+        }
         set({ user: null, isAuthenticated: false })
       },
       
