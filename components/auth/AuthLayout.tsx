@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { ReactNode } from 'react'
 
 interface AuthLayoutProps {
@@ -22,20 +23,20 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
 
       {/* Right side - Hero */}
       <div className="hidden lg:flex lg:flex-1 lg:flex-col lg:items-center lg:justify-center bg-gradient-to-br from-primary/20 via-transparent to-accent/20 px-8">
-        <div className="max-w-md text-center">
-          <div className="mb-8">
-            <div className="mx-auto h-16 w-16 rounded-xl bg-primary/20 flex items-center justify-center">
-              <div className="h-8 w-8 rounded-lg bg-primary"></div>
-            </div>
-          </div>
-          <h2 className="text-2xl font-bold text-foreground mb-4">
-            Fusion Tech
-          </h2>
+        <div className="max-w-md text-center flex flex-col items-center justify-center">
+          <Link href="/" className="flex items-center gap-2 font-bold text-lg mb-8">
+            <img
+              src="/fusion-tech-logo.png"
+              alt="Fusion Tech"
+              className="h-10 w-40"
+            />
+          </Link>
           <p className="text-muted-foreground">
-            Streamline your cloud infrastructure, manage bandwidth, and scale with confidence.
+            Streamline your cloud infrastructure, manage bandwidth, and scale
+            with confidence.
           </p>
         </div>
       </div>
     </div>
-  )
+  );
 }

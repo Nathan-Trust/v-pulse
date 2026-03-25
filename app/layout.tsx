@@ -9,7 +9,6 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: 'Fusion Tech - Cloud Hosting & Bandwidth Management',
   description: 'Streamline your network bandwidth and cloud services with Fusion Tech. Deploy, manage, and monitor servers with ease.',
-  generator: 'v0.app',
   viewport: {
     width: 'device-width',
     initialScale: 1,
@@ -30,7 +29,7 @@ export const metadata: Metadata = {
         type: 'image/svg+xml',
       },
     ],
-    apple: '/apple-icon.png',
+    apple: 'public/apple-touch-icon.png',
   },
 }
 

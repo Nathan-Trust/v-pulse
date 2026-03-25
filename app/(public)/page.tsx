@@ -1,7 +1,7 @@
 import { Hero } from '@/components/landing/Hero'
 import { Features } from '@/components/landing/Features'
 import { Pricing } from '@/components/landing/Pricing'
-import { CTA } from '@/components/landing/CTA'
+// import { CTA } from '@/components/landing/CTA'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 
@@ -13,7 +13,7 @@ export default function Home() {
         <Hero />
         <Features />
         <Pricing />
-        <CTA />
+        {/* <CTA /> */}
       </main>
       <Footer />
     </div>

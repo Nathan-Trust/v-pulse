@@ -14,11 +14,11 @@ export default function LoginPage() {
       subtitle="Sign in to access your dashboard"
     >
       <LoginForm />
-      <div className="mt-8 rounded-lg bg-muted p-4 text-sm text-muted-foreground">
+      {/* <div className="mt-8 rounded-lg bg-muted p-4 text-sm text-muted-foreground">
         <p className="font-medium mb-2">Demo Credentials:</p>
         <p>Email: <span className="font-mono text-foreground">demo@fusiontech.com</span></p>
         <p>Password: <span className="font-mono text-foreground">demo123</span></p>
-      </div>
+      </div> */}
     </AuthLayout>
   )
 }
