@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { mockServers, mockApplications, mockAnalytics } from '@/lib/mockData'
+import { Server, Zap, BarChart3, Activity, TrendingUp } from 'lucide-react'
 
 export default function DashboardPage() {
   const totalServers = mockServers.length
@@ -10,8 +11,8 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground mt-1">Welcome back! Here's your infrastructure overview.</p>
+        <h1 className="text-4xl font-bold text-foreground">Dashboard</h1>
+        <p className="text-muted-foreground mt-2">Welcome back! Here's your infrastructure overview.</p>
       </div>
 
       {/* Stats Grid */}
@@ -19,7 +20,7 @@ export default function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Servers</CardTitle>
-            <span className="text-2xl">🖥️</span>
+            <Server className="h-5 w-5 text-primary" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalServers}</div>
@@ -30,7 +31,7 @@ export default function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Applications</CardTitle>
-            <span className="text-2xl">⚡</span>
+            <Zap className="h-5 w-5 text-accent" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalApplications}</div>
@@ -41,18 +42,21 @@ export default function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Bandwidth (Week)</CardTitle>
-            <span className="text-2xl">📊</span>
+            <BarChart3 className="h-5 w-5 text-primary" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalBandwidth.toFixed(0)} GB</div>
-            <p className="text-xs text-muted-foreground">↑ 12% from last week</p>
+            <p className="text-xs text-muted-foreground flex items-center gap-1">
+              <TrendingUp className="h-3 w-3" />
+              12% from last week
+            </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Uptime</CardTitle>
-            <span className="text-2xl">✅</span>
+            <Activity className="h-5 w-5 text-green-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">99.98%</div>

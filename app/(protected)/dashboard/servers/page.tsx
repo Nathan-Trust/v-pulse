@@ -24,12 +24,12 @@ export default function ServersPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Servers</h1>
-          <p className="text-muted-foreground mt-1">Manage your cloud servers</p>
+          <h1 className="text-4xl font-bold text-foreground">Servers</h1>
+          <p className="text-muted-foreground mt-2">Manage your cloud servers</p>
         </div>
-        <Button>Create New Server</Button>
+        <Button className="w-full sm:w-auto">Create New Server</Button>
       </div>
 
       {/* Server List */}
@@ -61,32 +61,32 @@ export default function ServersPage() {
             </CardHeader>
 
             {selectedServer === server.id && (
-              <CardContent>
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                  <div className="rounded-lg bg-muted p-4">
-                    <p className="text-sm text-muted-foreground">CPU Cores</p>
-                    <p className="text-2xl font-bold text-foreground mt-1">{server.cpuCores}</p>
+              <CardContent className="border-t border-border pt-6">
+                <div className="grid gap-4 grid-cols-2 sm:grid-cols-4">
+                  <div className="rounded-lg bg-muted p-3">
+                    <p className="text-xs text-muted-foreground">CPU Cores</p>
+                    <p className="text-lg sm:text-2xl font-bold text-foreground mt-1">{server.cpuCores}</p>
                   </div>
-                  <div className="rounded-lg bg-muted p-4">
-                    <p className="text-sm text-muted-foreground">RAM</p>
-                    <p className="text-2xl font-bold text-foreground mt-1">{server.ram}GB</p>
+                  <div className="rounded-lg bg-muted p-3">
+                    <p className="text-xs text-muted-foreground">RAM</p>
+                    <p className="text-lg sm:text-2xl font-bold text-foreground mt-1">{server.ram}GB</p>
                   </div>
-                  <div className="rounded-lg bg-muted p-4">
-                    <p className="text-sm text-muted-foreground">Storage</p>
-                    <p className="text-2xl font-bold text-foreground mt-1">{server.storage}GB</p>
+                  <div className="rounded-lg bg-muted p-3">
+                    <p className="text-xs text-muted-foreground">Storage</p>
+                    <p className="text-lg sm:text-2xl font-bold text-foreground mt-1">{server.storage}GB</p>
                   </div>
-                  <div className="rounded-lg bg-muted p-4">
-                    <p className="text-sm text-muted-foreground">Bandwidth</p>
-                    <p className="text-2xl font-bold text-foreground mt-1">{server.bandwidth}GB</p>
+                  <div className="rounded-lg bg-muted p-3">
+                    <p className="text-xs text-muted-foreground">Bandwidth</p>
+                    <p className="text-lg sm:text-2xl font-bold text-foreground mt-1">{server.bandwidth}GB</p>
                   </div>
                 </div>
 
-                <div className="mt-6 flex gap-4">
-                  <Button variant="outline" asChild>
+                <div className="mt-6 flex flex-col sm:flex-row gap-2 sm:gap-4">
+                  <Button variant="outline" asChild className="flex-1">
                     <Link href={`/dashboard/servers/${server.id}`}>View Details</Link>
                   </Button>
-                  <Button variant="outline">Manage</Button>
-                  <Button variant="destructive" className="ml-auto">Delete</Button>
+                  <Button variant="outline" className="flex-1">Manage</Button>
+                  <Button variant="destructive" className="flex-1 sm:ml-auto">Delete</Button>
                 </div>
               </CardContent>
             )}
@@ -100,26 +100,26 @@ export default function ServersPage() {
           <CardTitle>Server Statistics</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 grid-cols-2 sm:grid-cols-4">
             <div>
-              <p className="text-sm text-muted-foreground">Total Servers</p>
-              <p className="text-3xl font-bold text-foreground mt-2">{mockServers.length}</p>
+              <p className="text-xs text-muted-foreground">Total Servers</p>
+              <p className="text-2xl sm:text-3xl font-bold text-foreground mt-2">{mockServers.length}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Active</p>
-              <p className="text-3xl font-bold text-accent mt-2">
+              <p className="text-xs text-muted-foreground">Active</p>
+              <p className="text-2xl sm:text-3xl font-bold text-accent mt-2">
                 {mockServers.filter(s => s.status === 'active').length}
               </p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Total Monthly Cost</p>
-              <p className="text-3xl font-bold text-foreground mt-2">
+              <p className="text-xs text-muted-foreground">Monthly Cost</p>
+              <p className="text-2xl sm:text-3xl font-bold text-foreground mt-2">
                 ${mockServers.reduce((sum, s) => sum + s.monthlyPrice, 0).toFixed(0)}
               </p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Total Bandwidth</p>
-              <p className="text-3xl font-bold text-foreground mt-2">
+              <p className="text-xs text-muted-foreground">Total Bandwidth</p>
+              <p className="text-2xl sm:text-3xl font-bold text-foreground mt-2">
                 {mockServers.reduce((sum, s) => sum + s.bandwidth, 0) / 1000}TB
               </p>
             </div>

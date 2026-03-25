@@ -12,8 +12,8 @@ export default function BillingPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-foreground">Billing</h1>
-        <p className="text-muted-foreground mt-1">Manage your subscription and payments</p>
+        <h1 className="text-4xl font-bold text-foreground">Billing</h1>
+        <p className="text-muted-foreground mt-2">Manage your subscription and payments</p>
       </div>
 
       {/* Current Plan */}
@@ -43,7 +43,7 @@ export default function BillingPage() {
       </Card>
 
       {/* Billing Overview */}
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader>
             <CardTitle className="text-base">This Month's Cost</CardTitle>

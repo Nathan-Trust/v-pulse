@@ -27,12 +27,12 @@ export default function ApplicationsPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Applications</h1>
-          <p className="text-muted-foreground mt-1">Deploy and manage your applications</p>
+          <h1 className="text-4xl font-bold text-foreground">Applications</h1>
+          <p className="text-muted-foreground mt-2">Deploy and manage your applications</p>
         </div>
-        <Button>Deploy Application</Button>
+        <Button className="w-full sm:w-auto">Deploy Application</Button>
       </div>
 
       {/* Applications Grid */}
@@ -72,19 +72,19 @@ export default function ApplicationsPage() {
             </CardHeader>
 
             {expandedApp === app.id && (
-              <CardContent>
+              <CardContent className="border-t border-border pt-6">
                 <div className="space-y-6">
                   {/* Deployment Info */}
                   <div>
                     <h4 className="font-semibold text-foreground mb-3">Deployment Info</h4>
-                    <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="grid gap-4 grid-cols-2 sm:grid-cols-2">
                       <div className="rounded-lg bg-muted p-4">
-                        <p className="text-sm text-muted-foreground">Last Deployed</p>
-                        <p className="text-foreground font-medium mt-1">{app.lastDeployed}</p>
+                        <p className="text-xs sm:text-sm text-muted-foreground">Last Deployed</p>
+                        <p className="text-sm sm:text-base text-foreground font-medium mt-1">{app.lastDeployed}</p>
                       </div>
                       <div className="rounded-lg bg-muted p-4">
-                        <p className="text-sm text-muted-foreground">Environment</p>
-                        <p className="text-foreground font-medium mt-1">Production</p>
+                        <p className="text-xs sm:text-sm text-muted-foreground">Environment</p>
+                        <p className="text-sm sm:text-base text-foreground font-medium mt-1">Production</p>
                       </div>
                     </div>
                   </div>
@@ -95,8 +95,8 @@ export default function ApplicationsPage() {
                     <div className="space-y-3">
                       <div>
                         <div className="flex justify-between items-center mb-2">
-                          <span className="text-sm text-muted-foreground">CPU Usage</span>
-                          <span className="text-sm font-semibold">45%</span>
+                          <span className="text-xs sm:text-sm text-muted-foreground">CPU Usage</span>
+                          <span className="text-xs sm:text-sm font-semibold">45%</span>
                         </div>
                         <div className="h-2 bg-muted rounded-full overflow-hidden">
                           <div className="h-full bg-accent" style={{ width: '45%' }}></div>
@@ -104,8 +104,8 @@ export default function ApplicationsPage() {
                       </div>
                       <div>
                         <div className="flex justify-between items-center mb-2">
-                          <span className="text-sm text-muted-foreground">Memory Usage</span>
-                          <span className="text-sm font-semibold">62%</span>
+                          <span className="text-xs sm:text-sm text-muted-foreground">Memory Usage</span>
+                          <span className="text-xs sm:text-sm font-semibold">62%</span>
                         </div>
                         <div className="h-2 bg-muted rounded-full overflow-hidden">
                           <div className="h-full bg-accent" style={{ width: '62%' }}></div>
@@ -113,8 +113,8 @@ export default function ApplicationsPage() {
                       </div>
                       <div>
                         <div className="flex justify-between items-center mb-2">
-                          <span className="text-sm text-muted-foreground">Response Time</span>
-                          <span className="text-sm font-semibold">125ms</span>
+                          <span className="text-xs sm:text-sm text-muted-foreground">Response Time</span>
+                          <span className="text-xs sm:text-sm font-semibold">125ms</span>
                         </div>
                         <div className="h-2 bg-muted rounded-full overflow-hidden">
                           <div className="h-full bg-accent" style={{ width: '30%' }}></div>
@@ -124,12 +124,12 @@ export default function ApplicationsPage() {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex flex-wrap gap-3">
-                    <Button variant="outline">Restart</Button>
-                    <Button variant="outline">Logs</Button>
-                    <Button variant="outline">Rollback</Button>
-                    <Button variant="outline" className="ml-auto">Edit</Button>
-                    <Button variant="destructive">Remove</Button>
+                  <div className="flex flex-col sm:flex-row flex-wrap gap-2">
+                    <Button variant="outline" className="flex-1 sm:flex-initial">Restart</Button>
+                    <Button variant="outline" className="flex-1 sm:flex-initial">Logs</Button>
+                    <Button variant="outline" className="flex-1 sm:flex-initial">Rollback</Button>
+                    <Button variant="outline" className="flex-1 sm:flex-initial sm:ml-auto">Edit</Button>
+                    <Button variant="destructive" className="flex-1 sm:flex-initial">Remove</Button>
                   </div>
                 </div>
               </CardContent>
@@ -144,26 +144,26 @@ export default function ApplicationsPage() {
           <CardTitle>Application Summary</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 grid-cols-2 sm:grid-cols-4">
             <div>
-              <p className="text-sm text-muted-foreground">Total Applications</p>
-              <p className="text-3xl font-bold text-foreground mt-2">{mockApplications.length}</p>
+              <p className="text-xs text-muted-foreground">Total Applications</p>
+              <p className="text-2xl sm:text-3xl font-bold text-foreground mt-2">{mockApplications.length}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Running</p>
-              <p className="text-3xl font-bold text-accent mt-2">
+              <p className="text-xs text-muted-foreground">Running</p>
+              <p className="text-2xl sm:text-3xl font-bold text-accent mt-2">
                 {mockApplications.filter(a => a.status === 'running').length}
               </p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Avg Uptime</p>
-              <p className="text-3xl font-bold text-foreground mt-2">
-                {(mockApplications.reduce((sum, a) => sum + a.uptimePercentage, 0) / mockApplications.length).toFixed(2)}%
+              <p className="text-xs text-muted-foreground">Avg Uptime</p>
+              <p className="text-2xl sm:text-3xl font-bold text-foreground mt-2">
+                {(mockApplications.reduce((sum, a) => sum + a.uptimePercentage, 0) / mockApplications.length).toFixed(1)}%
               </p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Languages</p>
-              <p className="text-3xl font-bold text-foreground mt-2">
+              <p className="text-xs text-muted-foreground">Languages</p>
+              <p className="text-2xl sm:text-3xl font-bold text-foreground mt-2">
                 {new Set(mockApplications.map(a => a.type)).size}
               </p>
             </div>
