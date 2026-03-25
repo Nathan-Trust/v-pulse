@@ -25,33 +25,38 @@ export function TopNavigation() {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-40 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="flex h-16 items-center justify-between px-4 sm:px-6">
-          <Link href="/dashboard" className="flex items-center gap-2 font-bold text-foreground">
-            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold">
-              FT
-            </div>
-            <span className="hidden sm:inline">Fusion Tech</span>
+          <Link
+            href="/dashboard"
+            className="flex items-center gap-2 font-bold text-foreground"
+          >
+            <img
+              src="/fusion-tech-logo.png"
+              alt="Fusion Tech"
+              className="h-10 w-40"
+            />
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item) => {
-              const Icon = item.icon
-              const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
+              const Icon = item.icon;
+              const isActive =
+                pathname === item.href || pathname.startsWith(item.href + "/");
               return (
                 <Link
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    'flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition-colors',
+                    "flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition-colors",
                     isActive
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted",
                   )}
                 >
                   <Icon size={18} />
                   <span>{item.label}</span>
                 </Link>
-              )
+              );
             })}
           </nav>
 
@@ -73,28 +78,29 @@ export function TopNavigation() {
         {mobileOpen && (
           <nav className="md:hidden border-t border-border bg-background px-4 py-3 space-y-1">
             {navItems.map((item) => {
-              const Icon = item.icon
-              const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
+              const Icon = item.icon;
+              const isActive =
+                pathname === item.href || pathname.startsWith(item.href + "/");
               return (
                 <Link
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    'flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors',
+                    "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors",
                     isActive
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted",
                   )}
                   onClick={() => setMobileOpen(false)}
                 >
                   <Icon size={18} />
                   <span>{item.label}</span>
                 </Link>
-              )
+              );
             })}
           </nav>
         )}
       </header>
     </>
-  )
+  );
 }

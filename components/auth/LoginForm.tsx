@@ -31,7 +31,7 @@ export function LoginForm() {
       await login(data.email, data.password)
       console.log('[v0] Login successful, user authenticated')
       // Immediately redirect after successful login
-      router.push('/dashboard')
+      router.push('/dashboard/servers')
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Login failed'
       console.log('[v0] Login error:', errorMsg)
