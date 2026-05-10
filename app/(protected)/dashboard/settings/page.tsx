@@ -29,8 +29,18 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState({
-    name: user?.name || 'Nathan Trust',
-    email: user?.email || 'nathan@fusiontech.io',
+    name: '',
+    email: '',
+  })
+
+  // Initialize form with user data when available
+  useState(() => {
+    if (user) {
+      setFormData({
+        name: user.name,
+        email: user.email
+      })
+    }
   })
 
   const handleSave = async () => {

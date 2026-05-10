@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/sheet"
 import { Button } from '@/components/ui/button'
 import { UserMenu } from '@/components/layout/UserMenu'
+import { useAuthStore } from '@/store/authStore'
 
 const navItems = [
   { href: '/dashboard/servers', label: 'Servers', icon: Server },
@@ -27,6 +28,7 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname()
+  const { user } = useAuthStore()
 
   const NavItem = ({ item }: { item: typeof navItems[0] }) => {
     const Icon = item.icon
@@ -88,8 +90,8 @@ export function Sidebar() {
         <div className="flex items-center gap-3 p-3 mt-4 rounded-lg bg-card border border-border/40">
           <UserMenu />
           <div className="flex flex-col min-w-0">
-            <span className="text-xs font-semibold truncate text-foreground">Nathan Trust</span>
-            <span className="text-[10px] text-muted-foreground truncate">Administrator</span>
+            <span className="text-xs font-semibold truncate text-foreground">{user?.name || 'Nathan Trust'}</span>
+            <span className="text-[10px] text-muted-foreground truncate">{user?.email || 'Administrator'}</span>
           </div>
         </div>
       </div>

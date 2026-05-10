@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useAuthStore } from '@/store/authStore'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -36,6 +37,7 @@ import {
 import { cn } from '@/lib/utils'
 
 export default function BillingClient() {
+  const { user } = useAuthStore()
   const currentPlan = mockPlans[1] // Professional plan
   const nextInvoiceDate = '2024-04-15'
   const totalMonthlyUsage = mockServers.reduce((sum, s) => sum + s.monthlyPrice, 0)
@@ -155,7 +157,7 @@ export default function BillingClient() {
       doc.text('Bill To:', 20, 60)
       doc.setFontSize(12)
       doc.setTextColor(0, 0, 0)
-      doc.text('Nathan Trust', 20, 68)
+      doc.text(user?.name || 'Nathan Trust', 20, 68)
 
       // Use the autoTable plugin
       if ((doc as any).autoTable) {
