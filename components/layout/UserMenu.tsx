@@ -47,7 +47,7 @@ export function UserMenu() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <a href="/dashboard">Dashboard</a>
+          <a href="/dashboard/servers">Dashboard</a>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <a href="/dashboard/settings">Settings</a>

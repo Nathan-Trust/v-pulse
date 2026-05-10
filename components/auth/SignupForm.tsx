@@ -28,7 +28,7 @@ export function SignupForm() {
     setError('')
     try {
       await signup(data.name, data.email, data.password)
-      router.push('/dashboard')
+      router.push('/dashboard/servers')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Signup failed')
     }

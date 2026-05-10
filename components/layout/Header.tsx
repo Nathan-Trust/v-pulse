@@ -39,7 +39,7 @@ export function Header() {
             {isAuthenticated && user ? (
               <>
                 <Button asChild variant="ghost" size="sm">
-                  <Link href="/dashboard">Dashboard</Link>
+                  <Link href="/dashboard/servers">Dashboard</Link>
                 </Button>
                 <UserMenu />
               </>
