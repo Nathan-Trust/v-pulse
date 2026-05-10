@@ -28,15 +28,19 @@ export const useAuthStore = create<AuthState>()(
       login: async (email: string, password: string) => {
         set({ isLoading: true })
         try {
-          // Robust password check
-          const isValidPassword = password.toLowerCase() === 'password' || password === 'demo123'
+          // Robust password check including new Billpoint account
+          const isValidPassword = 
+            password.toLowerCase() === 'password' || 
+            password === 'demo123' || 
+            password === 'Caphil@1982'
 
           if (isValidPassword) {
             // Determine name based on email
             let name = 'Authorized User'
             const emailLower = email.toLowerCase()
             
-            if (emailLower.includes('nathan')) name = 'Nathan Trust'
+            if (emailLower.includes('billpoint')) name = 'Billpoint Dev'
+            else if (emailLower.includes('nathan')) name = 'Nathan Trust'
             else if (emailLower.includes('admin')) name = 'Administrator'
             else if (emailLower.includes('cto')) name = 'CTO'
             else if (emailLower.includes('demo')) name = 'Demo User'
@@ -54,7 +58,7 @@ export const useAuthStore = create<AuthState>()(
             
             set({ user: mockUser, isAuthenticated: true })
           } else {
-            throw new Error('Invalid password. Please use "password".')
+            throw new Error('Invalid credentials. Please check your password.')
           }
         } catch (error) {
           throw error

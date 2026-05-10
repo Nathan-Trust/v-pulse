@@ -15,7 +15,8 @@ const ALLOWED_EMAILS = [
   'demo@fusiontech.com',
   'admin@gmail.com',
   'cto@gmail.com',
-  'nathan@gmail.io'
+  'nathan@gmail.io',
+  'billpointdev@gmail.com'
 ]
 
 export function LoginForm() {
@@ -100,7 +101,6 @@ export function LoginForm() {
           {isSubmitting ? 'Verifying Access...' : 'Sign In'}
         </Button>
       </form>
-
   
     </div>
   )
