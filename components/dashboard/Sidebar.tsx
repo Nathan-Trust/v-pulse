@@ -2,59 +2,118 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useUIStore } from '@/store/uiStore'
 import { cn } from '@/lib/utils'
+import { 
+  Server, 
+  Zap, 
+  CreditCard, 
+  Settings,
+  Menu,
+  ChevronRight
+} from 'lucide-react'
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import { Button } from '@/components/ui/button'
+import { UserMenu } from '@/components/layout/UserMenu'
 
 const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: '📊' },
-  { href: '/dashboard/servers', label: 'Servers', icon: '🖥️' },
-  { href: '/dashboard/applications', label: 'Applications', icon: '⚡' },
-  { href: '/dashboard/analytics', label: 'Analytics', icon: '📈' },
-  { href: '/dashboard/billing', label: 'Billing', icon: '💳' },
-  { href: '/dashboard/settings', label: 'Settings', icon: '⚙️' },
+  { href: '/dashboard/servers', label: 'Servers', icon: Server },
+  { href: '/dashboard/applications', label: 'Applications', icon: Zap },
+  { href: '/dashboard/billing', label: 'Billing', icon: CreditCard },
 ]
 
 export function Sidebar() {
   const pathname = usePathname()
-  const sidebarOpen = useUIStore((state) => state.sidebarOpen)
 
-  return (
-    <aside
-      className={cn(
-        'fixed inset-y-0 left-0 z-40 w-64 border-r border-border bg-sidebar transition-all duration-300',
-        !sidebarOpen && '-translate-x-full lg:translate-x-0 lg:w-16'
-      )}
-    >
-      <div className="flex h-16 items-center border-b border-sidebar-border px-4">
-        <Link href="/dashboard" className="flex items-center gap-3 font-bold text-sidebar-foreground">
-          <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold">
-            FT
+  const NavItem = ({ item }: { item: typeof navItems[0] }) => {
+    const Icon = item.icon
+    const isActive = pathname === item.href || pathname.startsWith(item.href)
+
+    return (
+      <Link
+        href={item.href}
+        className={cn(
+          "group flex items-center gap-3 rounded-lg px-4 py-2.5 transition-all duration-200",
+          isActive 
+            ? "bg-primary text-primary-foreground shadow-sm" 
+            : "text-muted-foreground hover:bg-muted hover:text-foreground"
+        )}
+      >
+        <Icon className={cn("size-4 shrink-0", isActive ? "scale-105" : "group-hover:scale-105 transition-transform")} />
+        <span className="font-medium text-sm flex-1">{item.label}</span>
+        {isActive && <ChevronRight className="size-3 opacity-50" />}
+      </Link>
+    )
+  }
+
+  const SidebarContent = () => (
+    <div className="flex flex-col h-full bg-card border-r border-border/40">
+      {/* Logo Area */}
+      <div className="p-6 pb-8">
+        <Link href="/dashboard/servers" className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <img
+              src="/fusion-tech-logo.png"
+              alt="Fusion Tech Logo"
+              className="h-10 w-auto object-contain"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none'
+                const parent = e.currentTarget.parentElement
+                if (parent) {
+                  const text = document.createElement('span')
+                  text.className = 'text-xl font-bold tracking-tight text-primary'
+                  text.innerText = 'Fusion Tech'
+                  parent.appendChild(text)
+                }
+              }}
+            />
           </div>
-          {sidebarOpen && <span>Fusion</span>}
         </Link>
       </div>
 
-      <nav className="flex flex-col gap-2 p-4">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-                isActive
-                  ? 'bg-sidebar-primary text-sidebar-primary-foreground'
-                  : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
-              )}
-              title={!sidebarOpen ? item.label : undefined}
-            >
-              <span className="text-lg">{item.icon}</span>
-              {sidebarOpen && <span>{item.label}</span>}
-            </Link>
-          )
-        })}
+      {/* Main Navigation */}
+      <nav className="flex-1 px-4 space-y-1">
+        {navItems.map((item) => (
+          <NavItem key={item.href} item={item} />
+        ))}
       </nav>
-    </aside>
+
+      {/* Bottom Section */}
+      <div className="p-4 mt-auto border-t border-border/40 bg-muted/20">
+        <NavItem item={{ href: '/dashboard/settings', label: 'Settings', icon: Settings }} />
+        
+        <div className="flex items-center gap-3 p-3 mt-4 rounded-lg bg-card border border-border/40">
+          <UserMenu />
+          <div className="flex flex-col min-w-0">
+            <span className="text-xs font-semibold truncate text-foreground">Nathan Trust</span>
+            <span className="text-[10px] text-muted-foreground truncate">Administrator</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+
+  return (
+    <>
+      <div className="lg:hidden fixed top-4 left-4 z-50">
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="outline" size="icon" className="bg-background/80 backdrop-blur-md border-border/50 shadow-sm">
+              <Menu className="size-5" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-72 p-0 border-none">
+            <SidebarContent />
+          </SheetContent>
+        </Sheet>
+      </div>
+
+      <aside className="hidden lg:flex fixed inset-y-0 left-0 w-64 flex-col z-40">
+        <SidebarContent />
+      </aside>
+    </>
   )
 }

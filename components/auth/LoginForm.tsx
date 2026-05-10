@@ -11,6 +11,13 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Link from 'next/link'
 
+const ALLOWED_EMAILS = [
+  'demo@fusiontech.com',
+  'admin@gmail.com',
+  'cto@gmail.com',
+  'nathan@gmail.io'
+]
+
 export function LoginForm() {
   const router = useRouter()
   const { login } = useAuthStore()
@@ -26,15 +33,20 @@ export function LoginForm() {
 
   const onSubmit = async (data: LoginInput) => {
     setError('')
+    
+    const emailLower = data.email.toLowerCase()
+    
+    // Check if email is allowed (case-insensitive)
+    if (!ALLOWED_EMAILS.some(e => e.toLowerCase() === emailLower)) {
+      setError('Access denied. This account does not have permission to access the dashboard.')
+      return
+    }
+
     try {
-      console.log('[v0] Attempting login with:', data.email)
       await login(data.email, data.password)
-      console.log('[v0] Login successful, user authenticated')
-      // Immediately redirect after successful login
       router.push('/dashboard/servers')
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Login failed'
-      console.log('[v0] Login error:', errorMsg)
       setError(errorMsg)
     }
   }
@@ -51,7 +63,7 @@ export function LoginForm() {
             id="email"
             type="email"
             placeholder="you@example.com"
-            className="mt-2"
+            className="mt-2 h-11 rounded-xl"
           />
           {errors.email && (
             <p className="mt-2 text-sm text-destructive">{errors.email.message}</p>
@@ -67,7 +79,7 @@ export function LoginForm() {
             id="password"
             type="password"
             placeholder="••••••••"
-            className="mt-2"
+            className="mt-2 h-11 rounded-xl"
           />
           {errors.password && (
             <p className="mt-2 text-sm text-destructive">{errors.password.message}</p>
@@ -75,7 +87,7 @@ export function LoginForm() {
         </div>
 
         {error && (
-          <div className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
+          <div className="rounded-xl bg-destructive/10 p-4 text-xs font-semibold text-destructive border border-destructive/20">
             {error}
           </div>
         )}
@@ -83,21 +95,13 @@ export function LoginForm() {
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="w-full"
+          className="w-full h-11 rounded-xl font-bold shadow-lg shadow-primary/20"
         >
-          {isSubmitting ? 'Signing in...' : 'Sign In'}
+          {isSubmitting ? 'Verifying Access...' : 'Sign In'}
         </Button>
       </form>
 
-      <p className="mt-4 text-center text-sm text-muted-foreground">
-        Don't have an account?{' '}
-        <Link
-          href="/signup"
-          className="font-medium text-primary hover:underline"
-        >
-          Sign up
-        </Link>
-      </p>
+  
     </div>
   )
 }
