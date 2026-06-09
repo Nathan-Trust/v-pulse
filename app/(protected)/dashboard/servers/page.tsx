@@ -105,7 +105,7 @@ export default function ServersPage() {
             <AlertTriangle className="size-5 text-destructive" />
           </div>
           <p className="text-sm font-medium text-destructive/90 leading-relaxed">
-            Your account has a past due balance. Please submit a payment of <span className="font-bold">$247</span> before Tuesday, May 12 to prevent service suspension.
+            Your account has a past due balance. Please submit a payment of <span className="font-bold">$248.57</span> before Friday, Jun 12 to prevent service suspension.
           </p>
         </div>
         <Link 
