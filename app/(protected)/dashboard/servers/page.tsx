@@ -98,7 +98,8 @@ export default function ServersPage() {
 
   return (
     <div className="space-y-6 pb-12">
-      {/* Account Alert Banner */}
+      {/* Account Alert Banner — temporarily hidden, uncomment to restore */}
+      {/*
       <div className="flex items-center justify-between p-5 px-8 bg-[#FEF2F2] border border-destructive/10 rounded-xl shadow-sm">
         <div className="flex items-center gap-4">
           <div className="size-9 rounded-full bg-destructive/10 flex items-center justify-center shrink-0">
@@ -108,13 +109,14 @@ export default function ServersPage() {
             Your account has a past due balance. Please submit a payment of <span className="font-bold">$248.57</span> before Friday, Jun 12 to prevent service suspension.
           </p>
         </div>
-        <Link 
-          href="/dashboard/billing" 
+        <Link
+          href="/dashboard/billing"
           className="text-sm font-bold text-destructive hover:underline flex items-center gap-2 shrink-0 ml-12 bg-destructive/5 px-4 py-2 rounded-lg transition-colors hover:bg-destructive/10"
         >
           Pay Now <ChevronRight className="size-4" />
         </Link>
       </div>
+      */}
 
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pt-2">

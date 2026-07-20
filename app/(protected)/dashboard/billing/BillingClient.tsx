@@ -36,6 +36,24 @@ import {
 } from "@/components/ui/dialog"
 import { cn } from '@/lib/utils'
 
+// '2026-02-14' -> '14 Feb 2026'
+function formatInvoiceDate(iso: string) {
+  const d = new Date(`${iso}T00:00:00`)
+  if (isNaN(d.getTime())) return iso
+  return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+}
+
+// Sequential per-year invoice number, e.g. FT-2026-0004
+function nextInvoiceNumber(isoDate: string, existing: any[]) {
+  const year = (isoDate || '').slice(0, 4) || String(new Date().getFullYear())
+  const prefix = `FT-${year}-`
+  const highest = existing
+    .map(inv => String(inv.id))
+    .filter(id => id.startsWith(prefix))
+    .reduce((max, id) => Math.max(max, parseInt(id.slice(prefix.length), 10) || 0), 0)
+  return `${prefix}${String(highest + 1).padStart(4, '0')}`
+}
+
 export default function BillingClient() {
   const { user } = useAuthStore()
   const currentPlan = mockPlans[1] // Professional plan
@@ -50,43 +68,50 @@ export default function BillingClient() {
   
   // Custom Invoice States
   const [customPrice, setCustomPrice] = useState('247')
+  const [customDate, setCustomDate] = useState(new Date().toISOString().split('T')[0])
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
-  // Persist invoices in localStorage
+  // Persist invoices in localStorage.
+  // Key is versioned so the old seed data is flushed on upgrade.
+  const STORAGE_KEY = 'ft_invoices_v2'
+
   useEffect(() => {
-    const saved = localStorage.getItem('ft_invoices')
+    const saved = localStorage.getItem(STORAGE_KEY)
     if (saved) {
       setInvoices(JSON.parse(saved))
     } else {
       const initial = [
-        { date: '2024-03-15', amount: '$247', status: 'Pending', id: '5100147867' },
-        { date: '2024-02-15', amount: '$874.99', status: 'Paid', id: '5100147866' },
-        { date: '2024-01-15', amount: '$824.99', status: 'Paid', id: '5100147865' },
+        { date: '2024-03-15', amount: '$247.00', status: 'Pending', id: 'FT-2024-0003' },
+        { date: '2024-02-15', amount: '$874.99', status: 'Paid', id: 'FT-2024-0002' },
+        { date: '2024-01-15', amount: '$824.99', status: 'Paid', id: 'FT-2024-0001' },
       ]
       setInvoices(initial)
-      localStorage.setItem('ft_invoices', JSON.stringify(initial))
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(initial))
     }
   }, [])
 
   const saveInvoices = (newInvoices: any[]) => {
     setInvoices(newInvoices)
-    localStorage.setItem('ft_invoices', JSON.stringify(newInvoices))
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(newInvoices))
   }
 
   const handleCreateInvoice = async () => {
     setIsGenerating(true)
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
+
     const amount = parseFloat(customPrice) || 0
     const newInvoice = {
-      date: new Date().toISOString().split('T')[0],
+      date: customDate,
       amount: `$${amount.toFixed(2)}`,
-      status: 'Pending',
-      id: `510014${Math.floor(7000 + Math.random() * 2000)}`
+      status: 'Paid',
+      id: nextInvoiceNumber(customDate, invoices)
     }
-    
-    const updated = [newInvoice, ...invoices]
-    saveInvoices(updated)
+
+    saveInvoices([newInvoice, ...invoices])
+
+    // Generate and download the PDF straight away, passing the invoice object
+    // directly (reading it back from state here would race the re-render).
+    await generateInvoicePDF(newInvoice)
+
     setIsGenerating(false)
     setJustGenerated(true)
     setIsDialogOpen(false)
@@ -94,20 +119,27 @@ export default function BillingClient() {
   }
 
   const handleDownloadPDF = async (id: string) => {
+    const invoice = invoices.find(inv => inv.id === id)
+    if (!invoice) return
     setIsDownloading(id)
+    await generateInvoicePDF(invoice)
+    setIsDownloading(null)
+  }
+
+  const generateInvoicePDF = async (invoice: any) => {
     try {
       // Robust dynamic import for jsPDF and its autoTable plugin
       const jspdfModule = await import('jspdf')
       // Some versions export jsPDF as default, others as a named export
       const jsPDF = jspdfModule.jsPDF || (jspdfModule as any).default
-      
+
       // Import autoTable which attaches itself to jsPDF
       await import('jspdf-autotable')
-      
-      const invoice = invoices.find(inv => inv.id === id);
-      const amountStr = invoice?.amount.replace('$', '') || '0';
-      const amountNum = parseFloat(amountStr);
-      
+
+      const id = invoice.id
+      const isPaid = invoice.status === 'Paid'
+      const amountNum = parseFloat(String(invoice.amount).replace('$', '')) || 0
+
       const bandwidthAmount = (amountNum * 0.65).toFixed(2);
       const storageAmount = (amountNum * 0.35).toFixed(2);
 
@@ -123,41 +155,56 @@ export default function BillingClient() {
         'SW1A 0AA, United Kingdom.'
       ], 20, 28)
 
-      doc.setFontSize(24)
-      doc.setFont('helvetica', 'bold')
-      doc.setTextColor(50, 50, 50)
-      doc.text('INVOICE', 140, 25)
+      // "Invoice" wordmark + invoice number, top right
+      doc.setFontSize(28)
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(40, 40, 40)
+      doc.text('Invoice', 190, 22, { align: 'right' })
 
       doc.setFontSize(10)
+      doc.setTextColor(120, 120, 120)
+      doc.text(`# ${id}`, 190, 29, { align: 'right' })
+
+      // Balance Due callout
+      const balanceDueTop = isPaid ? 0 : amountNum
+      doc.setFontSize(8)
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(120, 120, 120)
+      doc.text('Balance Due', 190, 40, { align: 'right' })
+      doc.setFontSize(13)
+      doc.setTextColor(30, 30, 30)
+      doc.text(`$${balanceDueTop.toFixed(2)}`, 190, 47, { align: 'right' })
+
+      // Meta rows (label right-aligned at 150, value right-aligned at 190)
+      doc.setFontSize(9)
       doc.setFont('helvetica', 'normal')
-      doc.setTextColor(100, 100, 100)
-      
-      const metaX = 140
-      const metaValueX = 175
-      let currentY = 40
+      const metaLabelX = 150
+      const metaValueX = 190
+      let currentY = 62
 
       const metaItems = [
-        { label: 'Invoice #', value: id },
-        { label: 'Invoice Date', value: invoice?.date },
-        { label: 'Terms', value: 'Due on Receipt' },
-        { label: 'Due Date', value: invoice?.date },
+        { label: 'Invoice Date :', value: formatInvoiceDate(invoice.date) },
+        { label: 'Terms :', value: 'Due on Receipt' },
+        { label: 'Due Date :', value: formatInvoiceDate(invoice.date) },
       ]
 
       metaItems.forEach(item => {
-        doc.setFont('helvetica', 'normal')
-        doc.text(item.label, metaX, currentY)
-        doc.setFont('helvetica', 'bold')
-        doc.text(item.value, metaValueX, currentY)
-        currentY += 6
+        doc.setTextColor(120, 120, 120)
+        doc.text(item.label, metaLabelX, currentY, { align: 'right' })
+        doc.setTextColor(40, 40, 40)
+        doc.text(item.value, metaValueX, currentY, { align: 'right' })
+        currentY += 7
       })
 
-      doc.setFontSize(11)
+      // Bill To block
+      doc.setFontSize(9)
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(120, 120, 120)
+      doc.text('Bill To', 20, 62)
+      doc.setFontSize(10)
       doc.setFont('helvetica', 'bold')
-      doc.setTextColor(100, 100, 100)
-      doc.text('Bill To:', 20, 60)
-      doc.setFontSize(12)
-      doc.setTextColor(0, 0, 0)
-      doc.text(user?.name || 'Nathan Trust', 20, 68)
+      doc.setTextColor(30, 30, 30)
+      doc.text(user?.name || 'Valued Customer', 20, 69)
 
       // Use the autoTable plugin
       if ((doc as any).autoTable) {
@@ -180,47 +227,90 @@ export default function BillingClient() {
               `$${storageAmount}`
             ]
           ],
-          theme: 'grid',
-          headStyles: { fillColor: [245, 245, 245], textColor: [50, 50, 50], fontStyle: 'bold', lineWidth: 0.1, lineColor: [200, 200, 200] },
-          bodyStyles: { textColor: [50, 50, 50], lineWidth: 0.1, lineColor: [200, 200, 200] },
+          theme: 'plain',
+          headStyles: {
+            fillColor: [50, 50, 50],
+            textColor: [255, 255, 255],
+            fontStyle: 'bold',
+            fontSize: 9,
+            cellPadding: 3
+          },
+          bodyStyles: { textColor: [60, 60, 60], fontSize: 9, cellPadding: 3 },
           columnStyles: {
             0: { cellWidth: 10 },
-            1: { cellWidth: 100 },
-            2: { cellWidth: 20, halign: 'center' },
-            3: { cellWidth: 30, halign: 'right' },
-            4: { cellWidth: 30, halign: 'right' }
+            1: { cellWidth: 90 },
+            2: { cellWidth: 20, halign: 'right' },
+            3: { cellWidth: 25, halign: 'right' },
+            4: { cellWidth: 25, halign: 'right' }
           },
-          margin: { top: 80 }
+          margin: { left: 20, right: 20 }
         })
 
-        const finalY = (doc as any).lastAutoTable.finalY + 10
-        doc.setFontSize(10)
-        doc.setTextColor(50, 50, 50)
-        
-        doc.text('Sub Total', 140, finalY)
-        doc.text(`$${amountNum.toFixed(2)}`, 180, finalY, { align: 'right' })
-        
-        doc.text('Payment Made', 140, finalY + 7)
-        doc.text('(-)$0.00', 180, finalY + 7, { align: 'right' })
-        
-        doc.setFontSize(12)
-        doc.setFont('helvetica', 'bold')
-        doc.text('Balance Due', 140, finalY + 16)
-        doc.text(`$${amountNum.toFixed(2)}`, 180, finalY + 16, { align: 'right' })
+        const tableEnd = (doc as any).lastAutoTable.finalY
+        doc.setDrawColor(220, 220, 220)
+        doc.setLineWidth(0.2)
+        doc.line(20, tableEnd + 2, 190, tableEnd + 2)
 
+        const paymentMade = isPaid ? amountNum : 0
+        const balanceDue = amountNum - paymentMade
+
+        let ty = tableEnd + 12
         doc.setFontSize(9)
         doc.setFont('helvetica', 'normal')
-        doc.setTextColor(150, 150, 150)
-        doc.text('Notes:', 20, finalY + 35)
-        doc.text('Thank you for your business. This is a computer-generated invoice; no signature is required.', 20, finalY + 42)
+        doc.setTextColor(90, 90, 90)
+
+        doc.text('Sub Total', 150, ty, { align: 'right' })
+        doc.text(amountNum.toFixed(2), 190, ty, { align: 'right' })
+        ty += 8
+
+        doc.setFont('helvetica', 'bold')
+        doc.setTextColor(40, 40, 40)
+        doc.text('Total', 150, ty, { align: 'right' })
+        doc.text(`$${amountNum.toFixed(2)}`, 190, ty, { align: 'right' })
+        ty += 8
+
+        doc.setFont('helvetica', 'normal')
+        doc.setTextColor(90, 90, 90)
+        doc.text('Payment Made', 150, ty, { align: 'right' })
+        doc.setTextColor(200, 60, 60)
+        doc.text(`(-) ${paymentMade.toFixed(2)}`, 190, ty, { align: 'right' })
+        ty += 6
+
+        // Highlighted Balance Due row
+        doc.setFillColor(243, 243, 243)
+        doc.rect(120, ty - 1, 70, 10, 'F')
+        doc.setFont('helvetica', 'bold')
+        doc.setFontSize(10)
+        doc.setTextColor(30, 30, 30)
+        doc.text('Balance Due', 150, ty + 5.5, { align: 'right' })
+        doc.text(`$${balanceDue.toFixed(2)}`, 187, ty + 5.5, { align: 'right' })
+
+        // Footer: Notes + Terms
+        const footerY = ty + 30
+        doc.setFont('helvetica', 'normal')
+        doc.setFontSize(9)
+        doc.setTextColor(60, 60, 60)
+        doc.text('Notes', 20, footerY)
+        doc.setFontSize(8)
+        doc.setTextColor(120, 120, 120)
+        doc.text(
+          isPaid ? 'Thank you for your payment.' : 'Thank you for your business.',
+          20,
+          footerY + 6
+        )
+
+        doc.setFontSize(9)
+        doc.setTextColor(60, 60, 60)
+        doc.text('Terms & Conditions', 20, footerY + 20)
+        doc.setFontSize(8)
+        doc.setTextColor(120, 120, 120)
+        doc.text('This is a computer-generated invoice, no signature is required.', 20, footerY + 26)
       }
 
       doc.save(`FusionTech_Invoice_${id}.pdf`)
     } catch (error) {
       console.error('PDF Generation Error:', error)
       alert('PDF generation encountered an issue. Please try again.')
-    } finally {
-      setIsDownloading(null)
     }
   }
 
@@ -235,7 +325,8 @@ export default function BillingClient() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-20">
-      {/* Alert Banner */}
+      {/* Alert Banner — temporarily hidden, uncomment to restore */}
+      {/*
       <div className="flex items-center justify-between p-5 px-8 bg-[#FEF2F2] border border-destructive/10 rounded-xl shadow-sm">
         <div className="flex items-center gap-4">
           <div className="size-9 rounded-full bg-destructive/10 flex items-center justify-center shrink-0">
@@ -245,7 +336,7 @@ export default function BillingClient() {
             Your account has a past due balance. Please submit a payment of <span className="font-bold">$248.57</span> before Friday, Jun 12, to prevent service suspension.
           </p>
         </div>
-        <button 
+        <button
           onClick={handlePayNow}
           disabled={isPaying}
           className="text-sm font-bold text-destructive hover:underline flex items-center gap-2 shrink-0 ml-12 bg-destructive/5 px-4 py-2 rounded-lg transition-colors hover:bg-destructive/10 disabled:opacity-50"
@@ -254,6 +345,7 @@ export default function BillingClient() {
           Pay Now <ChevronRight className="size-4" />
         </button>
       </div>
+      */}
 
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pt-4">
@@ -281,7 +373,7 @@ export default function BillingClient() {
               <DialogHeader>
                 <DialogTitle className="text-xl font-bold">New Custom Invoice</DialogTitle>
                 <DialogDescription className="text-sm">
-                  Enter the specific amount for this invoice. It will be generated as a high-fidelity PDF.
+                  Set the amount and issue date. The invoice is marked Paid and the PDF downloads immediately.
                 </DialogDescription>
               </DialogHeader>
               <div className="py-6 space-y-4">
@@ -299,15 +391,25 @@ export default function BillingClient() {
                     />
                   </div>
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="issueDate" className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Issue Date</Label>
+                  <Input
+                    id="issueDate"
+                    type="date"
+                    value={customDate}
+                    onChange={(e) => setCustomDate(e.target.value)}
+                    className="h-12 text-lg font-bold rounded-xl px-4"
+                  />
+                </div>
               </div>
               <DialogFooter>
-                <Button 
-                  onClick={handleCreateInvoice} 
+                <Button
+                  onClick={handleCreateInvoice}
                   disabled={isGenerating}
                   className="w-full h-11 rounded-xl font-bold"
                 >
                   {isGenerating ? <Loader2 className="size-4 animate-spin mr-2" /> : null}
-                  Generate Official PDF
+                  Generate & Download PDF
                 </Button>
               </DialogFooter>
             </DialogContent>
