@@ -133,8 +133,10 @@ export default function BillingClient() {
       // Some versions export jsPDF as default, others as a named export
       const jsPDF = jspdfModule.jsPDF || (jspdfModule as any).default
 
-      // Import autoTable which attaches itself to jsPDF
-      await import('jspdf-autotable')
+      // jspdf-autotable v3+ no longer patches doc.autoTable() — it's a
+      // standalone function called as autoTable(doc, options) instead.
+      const autoTableModule = await import('jspdf-autotable')
+      const autoTable = autoTableModule.default || (autoTableModule as any)
 
       const id = invoice.id
       const isPaid = invoice.status === 'Paid'
@@ -207,8 +209,8 @@ export default function BillingClient() {
       doc.text(user?.name || 'Valued Customer', 20, 69)
 
       // Use the autoTable plugin
-      if ((doc as any).autoTable) {
-        (doc as any).autoTable({
+      {
+        autoTable(doc, {
           startY: 85,
           head: [['#', 'Item & Description', 'Qty', 'Rate (USD)', 'Amount (USD)']],
           body: [
