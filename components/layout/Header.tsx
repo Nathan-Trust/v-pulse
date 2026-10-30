@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/authStore";
+import { PulseLogo } from "@/components/brand/PulseMark";
 import { UserMenu } from "./UserMenu";
 
 export function Header() {
@@ -14,11 +15,7 @@ export function Header() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 font-bold text-lg">
-            <img
-              src="/fusion-tech-logo.png"
-              alt="Fusion Tech"
-              className="h-10 w-40"
-            />
+            <PulseLogo />
           </Link>
 
           {/* Navigation */}

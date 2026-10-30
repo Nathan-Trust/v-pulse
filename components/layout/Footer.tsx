@@ -1,17 +1,14 @@
-import Link from 'next/link'
+import { BRAND } from '@/lib/brand'
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-muted/40">
-      <div className="mx-auto max-w-7xl px-4 py-7 sm:px-6 lg:px-8">
-       
-
-        <div className=" flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Fusion Tech. All rights reserved.
-          </p>
-        </div>
+    <footer className="border-t border-border">
+      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 py-7 sm:flex-row sm:px-6 lg:px-8">
+        <p className="text-sm text-muted-foreground">
+          © {new Date().getFullYear()} {BRAND.name}. All rights reserved.
+        </p>
+        <p className="text-sm text-muted-foreground">Demo project. All data shown is sample data.</p>
       </div>
     </footer>
-  );
+  )
 }

@@ -9,10 +9,10 @@ import { useAuthStore } from '@/store/authStore'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import Link from 'next/link'
+import { BRAND } from '@/lib/brand'
 
 const ALLOWED_EMAILS = [
-  'demo@fusiontech.com',
+  BRAND.demoEmail,
   'admin@gmail.com',
   'cto@gmail.com',
   'nathan@gmail.io',
@@ -64,7 +64,7 @@ export function LoginForm() {
             id="email"
             type="email"
             placeholder="you@example.com"
-            className="mt-2 h-11 rounded-xl"
+            className="mt-2 h-11"
           />
           {errors.email && (
             <p className="mt-2 text-sm text-destructive">{errors.email.message}</p>
@@ -80,7 +80,7 @@ export function LoginForm() {
             id="password"
             type="password"
             placeholder="••••••••"
-            className="mt-2 h-11 rounded-xl"
+            className="mt-2 h-11"
           />
           {errors.password && (
             <p className="mt-2 text-sm text-destructive">{errors.password.message}</p>
@@ -88,7 +88,7 @@ export function LoginForm() {
         </div>
 
         {error && (
-          <div className="rounded-xl bg-destructive/10 p-4 text-xs font-semibold text-destructive border border-destructive/20">
+          <div className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
             {error}
           </div>
         )}
@@ -96,7 +96,7 @@ export function LoginForm() {
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="w-full h-11 rounded-xl font-bold shadow-lg shadow-primary/20"
+          className="w-full h-11"
         >
           {isSubmitting ? 'Verifying Access...' : 'Sign In'}
         </Button>

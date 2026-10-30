@@ -3,8 +3,8 @@ import { AuthLayout } from '@/components/auth/AuthLayout'
 import { SignupForm } from '@/components/auth/SignupForm'
 
 export const metadata: Metadata = {
-  title: 'Create Account - Fusion Tech',
-  description: 'Create a new Fusion Tech account',
+  title: 'Create Account - V Pulse',
+  description: 'Create a new V Pulse account',
 }
 
 export default function SignupPage() {

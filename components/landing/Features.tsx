@@ -42,34 +42,25 @@ export function Features() {
   ]
 
   return (
-    <section id="features" className="px-4 py-20 sm:px-6 lg:px-8">
+    <section id="features" className="border-t border-border px-4 py-20 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-16 text-center space-y-4">
-          <h2 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+        <div className="mb-12 max-w-2xl space-y-3">
+          <h2 className="font-display text-4xl font-semibold tracking-tight text-foreground">
             Everything You Need
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground">
             Powerful tools to manage your cloud infrastructure with confidence
           </p>
         </div>
 
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {features.map((feature, index) => {
+        <div className="grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+          {features.map((feature) => {
             const Icon = feature.icon
             return (
-              <div
-                key={index}
-                className="rounded-xl border border-border bg-card p-6 hover:shadow-lg hover:border-primary/30 transition-all"
-              >
-                <div className="mb-4 inline-flex p-3 rounded-lg bg-primary/10 text-primary">
-                  <Icon size={24} />
-                </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">
-                  {feature.title}
-                </h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  {feature.description}
-                </p>
+              <div key={feature.title} className="border-l-2 border-primary pl-4">
+                <Icon className="mb-3 size-5 text-primary" />
+                <h3 className="mb-1.5 font-semibold text-foreground">{feature.title}</h3>
+                <p className="text-sm leading-relaxed text-muted-foreground">{feature.description}</p>
               </div>
             )
           })}

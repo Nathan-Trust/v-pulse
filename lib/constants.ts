@@ -16,7 +16,7 @@ export const ROUTES = {
 export const DEMO_USERS = [
   {
     id: '1',
-    email: 'demo@fusiontech.com',
+    email: 'demo@vpulse.example',
     password: 'demo123',
     name: 'Demo User',
   },

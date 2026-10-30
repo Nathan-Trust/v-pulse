@@ -28,11 +28,10 @@ export const useAuthStore = create<AuthState>()(
       login: async (email: string, password: string) => {
         set({ isLoading: true })
         try {
-          // Robust password check including new Billpoint account
-          const isValidPassword = 
-            password.toLowerCase() === 'password' || 
-            password === 'demo123' || 
-            password === 'Caphil@1982'
+          // Demo-only check: this runs in the browser, so it can't hold real secrets
+          const isValidPassword =
+            password.toLowerCase() === 'password' ||
+            password === 'demo123'
 
           if (isValidPassword) {
             // Determine name based on email
