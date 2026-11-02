@@ -84,6 +84,7 @@ export default function BillingClient() {
   const [customDate, setCustomDate] = useState(
     new Date().toISOString().split("T")[0],
   );
+  const [lineItemCount, setLineItemCount] = useState<1 | 2 | 3>(2);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -125,6 +126,7 @@ export default function BillingClient() {
       amount: `$${amount.toFixed(2)}`,
       status: "Paid",
       id: nextInvoiceNumber(customDate, invoices),
+      lineItemCount,
     };
 
     saveInvoices([newInvoice, ...invoices]);
@@ -212,6 +214,21 @@ export default function BillingClient() {
                   onChange={(e) => setCustomDate(e.target.value)}
                   className="h-11"
                 />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="lineItemCount">Description breakdown</Label>
+                <select
+                  id="lineItemCount"
+                  value={lineItemCount}
+                  onChange={(event) =>
+                    setLineItemCount(Number(event.target.value) as 1 | 2 | 3)
+                  }
+                  className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground"
+                >
+                  <option value={1}>1 description</option>
+                  <option value={2}>2 descriptions</option>
+                  <option value={3}>3 descriptions</option>
+                </select>
               </div>
             </div>
             <DialogFooter>

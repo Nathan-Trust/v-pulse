@@ -5,6 +5,7 @@ export interface Invoice {
   date: string;
   amount: string;
   status: "Paid" | "Pending";
+  lineItemCount?: 1 | 2 | 3;
 }
 
 // '2026-02-14' -> '14 Feb 2026'
@@ -44,10 +45,63 @@ export async function generateInvoicePDF(
 
   const id = invoice.id;
   const isPaid = invoice.status === "Paid";
-  const amountNum = parseFloat(String(invoice.amount).replace("$", "")) || 0;
-
-  const bandwidthAmount = (amountNum * 0.65).toFixed(2);
-  const storageAmount = (amountNum * 0.35).toFixed(2);
+  const amountNum =
+    Math.round(
+      (parseFloat(String(invoice.amount).replace("$", "")) || 0) * 100,
+    ) / 100;
+  const itemCount = invoice.lineItemCount ?? 2;
+  const itemDefinitions = {
+    1: [
+      {
+        description: "Cloud Infrastructure Services",
+        detail: "Monthly cloud infrastructure services.",
+        share: 100,
+      },
+    ],
+    2: [
+      {
+        description: "Server Bandwidth",
+        detail: "High-volume data transfer and network capacity fee.",
+        share: 65,
+      },
+      {
+        description: "Cloud Storage Maintenance",
+        detail: "Monthly upkeep for secure application data hosting.",
+        share: 35,
+      },
+    ],
+    3: [
+      {
+        description: "Server Bandwidth",
+        detail: "High-volume data transfer and network capacity fee.",
+        share: 55,
+      },
+      {
+        description: "Cloud Storage Maintenance",
+        detail: "Monthly upkeep for secure application data hosting.",
+        share: 30,
+      },
+      {
+        description: "Infrastructure Management",
+        detail: "Monitoring and maintenance of cloud services.",
+        share: 15,
+      },
+    ],
+  }[itemCount];
+  const totalCents = Math.round(amountNum * 100);
+  let allocatedCents = 0;
+  const lineItems = itemDefinitions.map((item, index) => {
+    const cents =
+      index === itemDefinitions.length - 1
+        ? totalCents - allocatedCents
+        : Math.round((totalCents * item.share) / 100);
+    allocatedCents += cents;
+    const lineAmount = (cents / 100).toFixed(2);
+    return {
+      description: `${item.description}\n${item.detail}`,
+      amount: `$${lineAmount}`,
+    };
+  });
 
   const doc = new jsPDF();
 
@@ -106,30 +160,13 @@ export async function generateInvoicePDF(
   autoTable(doc, {
     startY: 85,
     head: [["#", "Item & Description", "Qty", "Rate (USD)", "Amount (USD)"]],
-    body: [
-      [
-        "1",
-        {
-          content:
-            "Server Bandwidth\nHigh-volume data transfer and network capacity fee.",
-          styles: { fontStyle: "normal" },
-        },
-        "1.00",
-        `$${bandwidthAmount}`,
-        `$${bandwidthAmount}`,
-      ],
-      [
-        "2",
-        {
-          content:
-            "Cloud Storage Maintenance\nMonthly upkeep for secure application data hosting.",
-          styles: { fontStyle: "normal" },
-        },
-        "1.00",
-        `$${storageAmount}`,
-        `$${storageAmount}`,
-      ],
-    ],
+    body: lineItems.map((item, index) => [
+      String(index + 1),
+      { content: item.description, styles: { fontStyle: "normal" } },
+      "1.00",
+      item.amount,
+      item.amount,
+    ]),
     theme: "plain",
     headStyles: {
       fillColor: [50, 50, 50],
