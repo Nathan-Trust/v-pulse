@@ -193,24 +193,11 @@ export async function generateInvoicePDF(
 
   let ty = tableEnd + 12;
   doc.setFontSize(8);
-  doc.setFont("helvetica", "normal");
-  doc.setTextColor(90, 90, 90);
-  doc.text("Sub Total", 150, ty, { align: "right" });
-  doc.text(amountNum.toFixed(2), 190, ty, { align: "right" });
-  ty += 7;
-
   doc.setFont("helvetica", "bold");
   doc.setTextColor(40, 40, 40);
   doc.text("Total", 150, ty, { align: "right" });
   doc.text(`$${amountNum.toFixed(2)}`, 190, ty, { align: "right" });
   ty += 7;
-
-  doc.setFont("helvetica", "normal");
-  doc.setTextColor(90, 90, 90);
-  doc.text("Payment Made", 150, ty, { align: "right" });
-  doc.setTextColor(200, 60, 60);
-  doc.text(`(-) ${paymentMade.toFixed(2)}`, 190, ty, { align: "right" });
-  ty += 5;
 
   // Highlighted Balance Due row
   doc.setFillColor(243, 243, 243);
