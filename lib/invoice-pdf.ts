@@ -192,34 +192,34 @@ export async function generateInvoicePDF(
   doc.line(20, tableEnd + 2, 190, tableEnd + 2);
 
   let ty = tableEnd + 12;
-  doc.setFontSize(9);
+  doc.setFontSize(8);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(90, 90, 90);
   doc.text("Sub Total", 150, ty, { align: "right" });
   doc.text(amountNum.toFixed(2), 190, ty, { align: "right" });
-  ty += 8;
+  ty += 7;
 
   doc.setFont("helvetica", "bold");
   doc.setTextColor(40, 40, 40);
   doc.text("Total", 150, ty, { align: "right" });
   doc.text(`$${amountNum.toFixed(2)}`, 190, ty, { align: "right" });
-  ty += 8;
+  ty += 7;
 
   doc.setFont("helvetica", "normal");
   doc.setTextColor(90, 90, 90);
   doc.text("Payment Made", 150, ty, { align: "right" });
   doc.setTextColor(200, 60, 60);
   doc.text(`(-) ${paymentMade.toFixed(2)}`, 190, ty, { align: "right" });
-  ty += 6;
+  ty += 5;
 
   // Highlighted Balance Due row
   doc.setFillColor(243, 243, 243);
-  doc.rect(120, ty - 1, 70, 10, "F");
+  doc.rect(120, ty - 1, 70, 8, "F");
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(10);
+  doc.setFontSize(9);
   doc.setTextColor(30, 30, 30);
-  doc.text("Balance Due", 150, ty + 5.5, { align: "right" });
-  doc.text(`$${balanceDue.toFixed(2)}`, 187, ty + 5.5, { align: "right" });
+  doc.text("Balance Due", 150, ty + 4.5, { align: "right" });
+  doc.text(`$${balanceDue.toFixed(2)}`, 187, ty + 4.5, { align: "right" });
 
   // Footer: Notes + Payment Terms
   const footerY = ty + 30;
