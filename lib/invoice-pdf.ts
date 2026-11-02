@@ -166,7 +166,7 @@ export async function generateInvoicePDF(invoice: Invoice, customerName?: string
   doc.text('Balance Due', 150, ty + 5.5, { align: 'right' })
   doc.text(`$${balanceDue.toFixed(2)}`, 187, ty + 5.5, { align: 'right' })
 
-  // Footer: Notes + Terms
+  // Footer: Notes + Payment Terms
   const footerY = ty + 30
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(9)
@@ -178,19 +178,10 @@ export async function generateInvoicePDF(invoice: Invoice, customerName?: string
 
   doc.setFontSize(9)
   doc.setTextColor(60, 60, 60)
-  doc.text('Terms & Conditions', 20, footerY + 20)
+  doc.text('Payment Terms', 20, footerY + 20)
   doc.setFontSize(8)
   doc.setTextColor(120, 120, 120)
-  doc.text('Sample document for demonstration only. Not a valid invoice or proof of payment.', 20, footerY + 26)
-
-  // Drawn last so the table fills and highlight rows can't cover it
-  doc.saveGraphicsState()
-  doc.setGState(new (doc as any).GState({ opacity: 0.12 }))
-  doc.setFont('helvetica', 'bold')
-  doc.setFontSize(96)
-  doc.setTextColor(200, 30, 30)
-  doc.text('SAMPLE', 105, 175, { align: 'center', angle: 35 })
-  doc.restoreGraphicsState()
+  doc.text(isPaid ? 'Payment received in full. Thank you for your business.' : 'Payment is due upon receipt.', 20, footerY + 26)
 
   doc.save(`V Pulse Invoice ${id}.pdf`)
 }
