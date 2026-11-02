@@ -109,7 +109,7 @@ export default function BillingClient() {
 
     setIsGenerating(false)
     setIsDialogOpen(false)
-    if (saved) toast.success(`Sample invoice ${newInvoice.id} created`)
+    if (saved) toast.success(`Invoice ${newInvoice.id} created`)
   }
 
   const handleDownloadPDF = async (invoice: Invoice) => {
@@ -123,25 +123,24 @@ export default function BillingClient() {
     await new Promise(resolve => setTimeout(resolve, 2000))
     saveInvoices(invoices.map(inv => inv.status === 'Pending' ? { ...inv, status: 'Paid' } : inv))
     setIsPaying(false)
-    toast.success('Pending demo invoices are now marked as Paid.')
+    toast.success('Pending invoices are now marked as Paid.')
   }
 
   const hasPending = invoices.some(inv => inv.status === 'Pending')
 
   return (
     <div className="space-y-8 pb-12">
-      <PageHeader title="Billing" description="Review your plan and generate sample PDF invoices.">
-        <Badge variant="outline" className="border-warning/40 text-warning">Demo data</Badge>
+      <PageHeader title="Billing" description="Review your plan and generate PDF invoices.">
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button className="gap-2">
               <Plus className="size-4" />
-              Create Sample Invoice
+              Create Invoice
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle className="font-display text-xl">New Sample Invoice</DialogTitle>
+              <DialogTitle className="font-display text-xl">New Invoice</DialogTitle>
               <DialogDescription>
                 Set the amount and issue date. The PDF downloads immediately and is watermarked SAMPLE.
               </DialogDescription>

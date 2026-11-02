@@ -3,13 +3,12 @@ export const BRAND = {
   tagline: 'Cloud infrastructure, monitored in real time',
   description:
     'Deploy, manage, and monitor servers, applications, and bandwidth from a single console.',
-  contactEmail: 'contact@vpulse.example',
-  demoEmail: 'demo@vpulse.example',
-  appDomain: 'vpulse.example',
-  // Placeholder issuer: V Pulse is a demo project, so invoices are samples only
+  contactEmail: 'support@vpulse.app',
+  loginEmail: 'admin@vpulse.app',
+  appDomain: 'vpulse.app',
   issuer: {
-    name: 'V Pulse Demo Co.',
-    address: ['123 Example Street,', 'Sample City.'],
+    name: 'V Pulse',
+    address: ['Cloud Infrastructure Services'],
   },
   invoicePrefix: 'VP',
 }

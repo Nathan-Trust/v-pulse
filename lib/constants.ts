@@ -13,11 +13,11 @@ export const ROUTES = {
   SETTINGS: '/dashboard/settings',
 }
 
-export const DEMO_USERS = [
+export const DEFAULT_USERS = [
   {
     id: '1',
-    email: 'demo@vpulse.example',
-    password: 'demo123',
-    name: 'Demo User',
+    email: 'admin@vpulse.app',
+    password: 'vpulse123',
+    name: 'V Pulse User',
   },
 ]

@@ -91,7 +91,7 @@ export async function generateInvoicePDF(invoice: Invoice, customerName?: string
   doc.setFontSize(10)
   doc.setFont('helvetica', 'bold')
   doc.setTextColor(30, 30, 30)
-  doc.text(customerName || 'Sample Customer', 20, 69)
+  doc.text(customerName || 'Customer', 20, 69)
 
   autoTable(doc, {
     startY: 85,
@@ -192,5 +192,5 @@ export async function generateInvoicePDF(invoice: Invoice, customerName?: string
   doc.text('SAMPLE', 105, 175, { align: 'center', angle: 35 })
   doc.restoreGraphicsState()
 
-  doc.save(`VPulse_SAMPLE_Invoice_${id}.pdf`)
+  doc.save(`V Pulse Invoice ${id}.pdf`)
 }

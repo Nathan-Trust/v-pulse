@@ -23,20 +23,23 @@ const settingsItem = { href: '/dashboard/settings', label: 'Settings', icon: Set
 function NavItem({ item, onNavigate }: { item: typeof navItems[0]; onNavigate?: () => void }) {
   const pathname = usePathname()
   const Icon = item.icon
-  const isActive = pathname.startsWith(item.href)
+  const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
 
   return (
     <Link
       href={item.href}
       onClick={onNavigate}
       className={cn(
-        'flex items-center gap-3 rounded-lg border-l-2 px-3 py-2.5 text-sm font-medium transition-colors',
+        'relative flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors',
         isActive
-          ? 'border-primary bg-sidebar-accent text-primary'
-          : 'border-transparent text-muted-foreground hover:bg-sidebar-accent hover:text-foreground'
+          ? 'bg-primary/10 text-foreground'
+          : 'text-muted-foreground hover:bg-sidebar-accent hover:text-foreground'
       )}
     >
-      <Icon className="size-4 shrink-0" />
+      {isActive && (
+        <span aria-hidden className="absolute inset-y-2 left-0 w-1 rounded-r-full bg-primary" />
+      )}
+      <Icon className={cn('size-4 shrink-0', isActive && 'text-primary')} />
       {item.label}
     </Link>
   )
@@ -64,7 +67,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         <div className="flex items-center gap-3 rounded-lg bg-sidebar-accent p-3">
           <UserMenu />
           <div className="flex min-w-0 flex-col">
-            <span className="truncate text-xs font-semibold text-foreground">{user?.name || 'Demo User'}</span>
+            <span className="truncate text-xs font-semibold text-foreground">{user?.name || 'V Pulse User'}</span>
             <span className="truncate text-xs text-muted-foreground">{user?.email || 'Signed in'}</span>
           </div>
         </div>

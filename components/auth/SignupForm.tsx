@@ -61,7 +61,7 @@ export function SignupForm() {
             {...register('email')}
             id="email"
             type="email"
-            placeholder="you@example.com"
+            placeholder="you@company.com"
             className="mt-2"
           />
           {errors.email && (

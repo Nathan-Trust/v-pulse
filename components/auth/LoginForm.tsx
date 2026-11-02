@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label'
 import { BRAND } from '@/lib/brand'
 
 const ALLOWED_EMAILS = [
-  BRAND.demoEmail,
+  BRAND.loginEmail,
   'admin@gmail.com',
   'cto@gmail.com',
   'nathan@gmail.io',
@@ -63,7 +63,7 @@ export function LoginForm() {
             {...register('email')}
             id="email"
             type="email"
-            placeholder="you@example.com"
+            placeholder="you@company.com"
             className="mt-2 h-11"
           />
           {errors.email && (

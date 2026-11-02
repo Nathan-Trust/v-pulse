@@ -28,10 +28,10 @@ export const useAuthStore = create<AuthState>()(
       login: async (email: string, password: string) => {
         set({ isLoading: true })
         try {
-          // Demo-only check: this runs in the browser, so it can't hold real secrets
+          // Client-side check only: this runs in the browser, so it can't hold real secrets
           const isValidPassword =
             password.toLowerCase() === 'password' ||
-            password === 'demo123'
+            password === 'vpulse123'
 
           if (isValidPassword) {
             // Determine name based on email
@@ -42,7 +42,6 @@ export const useAuthStore = create<AuthState>()(
             else if (emailLower.includes('nathan')) name = 'Nathan Trust'
             else if (emailLower.includes('admin')) name = 'Administrator'
             else if (emailLower.includes('cto')) name = 'CTO'
-            else if (emailLower.includes('demo')) name = 'Demo User'
 
             const mockUser: User = {
               id: Math.random().toString(36).substr(2, 9),

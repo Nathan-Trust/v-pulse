@@ -7,7 +7,6 @@ export function Footer() {
         <p className="text-sm text-muted-foreground">
           © {new Date().getFullYear()} {BRAND.name}. All rights reserved.
         </p>
-        <p className="text-sm text-muted-foreground">Demo project. All data shown is sample data.</p>
       </div>
     </footer>
   )
